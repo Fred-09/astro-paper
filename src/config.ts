@@ -4,7 +4,7 @@ export const SITE = {
   profile: "",
   desc: "A personal blog about life, learning and thinking.",
   title: "Fred Song",
-  ogImage: "astropaper-og.jpg",
+  ogImage: "head.svg",
   lightAndDarkMode: true,
   postPerIndex: 4,
   postPerPage: 4,
