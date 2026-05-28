@@ -7,7 +7,8 @@ slug: why-i-launched-my-blog
 featured: true
 draft: false
 tags:
-  - docs
+  - life
+  - travel
 description:
   My first blog post explaining about why launched my blog.
 ---
