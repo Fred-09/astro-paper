@@ -1,9 +1,9 @@
 export const SITE = {
-  website: "https://astro-paper-b83.pages.dev", // replace this with your deployed domain
-  author: "Fred Song",
+  website: "https://fredericksong.com", // replace this with your deployed domain
+  author: "Frederick Song",
   profile: "",
   desc: "A personal blog about life, learning and thinking.",
-  title: "Fred Song",
+  title: "Frederick Song",
   ogImage: "head.svg",
   lightAndDarkMode: true,
   postPerIndex: 4,
