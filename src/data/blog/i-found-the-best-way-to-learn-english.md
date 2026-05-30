@@ -1,16 +1,17 @@
 ---
 author: Fred Song
-pubDatetime: 2026-05-30T03:21:00Z
-modDatetime: 2026-05-30T03:21:00Z
-title: I found the best way to learn English
+pubDatetime: 2026-05-30T03:42:07Z
+modDatetime: 2026-05-30T03:42:07Z
+title: I Found the Best Way to Learn English
 slug: i-found-the-best-way-to-learn-english
 featured: true
 draft: false
 tags:
   - English
   - language
-description:
-  After one week of exploration, I discovered an effective way to learn English — language learning starts with conversation, not word memorization.
+  - english-learning
+description: After one week of exploration, I discovered an effective way to learn English — language learning starts with conversation, not word memorization.
+---
 
 I’ve done nothing this week but try out different methods in my English study.
 
