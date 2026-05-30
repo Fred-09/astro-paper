@@ -9,8 +9,9 @@ draft: false
 tags:
   - life
   - travel
+  - English
 description:
-  My first blog post explaining about why launched my blog.
+  My first blog post explaining why I launched my blog.
 ---
 
 This is my first blog post. I am not the kind of person who dares to act on a new idea the moment it pops into my head; I tend to hesitate sometimes. So first off, I want to talk about why I decided to start writing blogs.
