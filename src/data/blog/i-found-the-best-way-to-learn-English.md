@@ -3,7 +3,7 @@ author: Fred Song
 pubDatetime: 2026-05-30T03:21:00Z
 modDatetime: 2026-05-30T03:21:00Z
 title: I found the best way to learn English
-slug: i-found-the-best-way-to-learn-English
+slug: i-found-the-best-way-to-learn-english
 featured: true
 draft: false
 tags:
