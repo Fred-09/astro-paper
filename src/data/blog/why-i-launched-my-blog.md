@@ -2,12 +2,14 @@
 author: Fred Song
 pubDatetime: 2026-05-23T03:07:00Z
 modDatetime: 2026-05-23T03:07:00Z
-title: Why I launched my blog
+title: Why I Launched My Blog
 slug: why-i-launched-my-blog
 featured: true
 draft: false
 tags:
   - life
+  - attempt
+  - project
   - travel
   - English
 description:
