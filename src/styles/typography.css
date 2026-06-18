@@ -3,54 +3,100 @@
 @layer base {
   /* ===== Override default Tailwind Typography styles ===== */
   .app-prose {
-    @apply prose;
+    @apply prose prose-lg max-w-none;
 
-    h1,
-    h2,
-    h3,
+    /* ---------- Headings ---------- */
+    h1 {
+      @apply mb-6 text-foreground;
+    }
+
+    h2 {
+      @apply mb-4 mt-10 text-foreground;
+      position: relative;
+      padding-left: 1rem;
+    }
+    h2::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.15em;
+      bottom: 0.15em;
+      width: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      opacity: 0.7;
+    }
+
+    h3 {
+      @apply mb-3 mt-8 text-foreground italic;
+    }
+
     h4,
     th {
       @apply mb-3 text-foreground;
     }
 
-    h3 {
-      @apply italic;
+    /* ---------- Body ---------- */
+    p {
+      @apply mb-5 leading-relaxed text-foreground;
     }
 
-    p,
-    strong,
-    ol,
-    ul,
-    figcaption,
-    table,
-    code {
+    strong {
       @apply text-foreground;
     }
 
+    /* ---------- Links ---------- */
     a {
-      @apply wrap-break-word text-foreground decoration-dashed underline-offset-4 hover:text-accent focus-visible:no-underline;
+      @apply text-foreground decoration-dashed underline-offset-4 hover:text-accent focus-visible:no-underline;
+      word-wrap: break-word;
     }
 
+    /* ---------- Lists ---------- */
     ul {
       @apply overflow-x-clip;
+    }
+
+    ol,
+    ul {
+      @apply text-foreground;
     }
 
     li {
       @apply marker:text-accent;
     }
 
-    hr {
-      @apply border-border;
+    /* ---------- Blockquote ---------- */
+    blockquote {
+      @apply my-6 rounded-r-md border-s-2 border-accent/60 bg-muted/30 px-5 py-3;
+      font-style: italic;
+      opacity: 0.9;
+    }
+    blockquote p {
+      @apply mb-0;
     }
 
+    /* ---------- Horizontal Rule ---------- */
+    hr {
+      @apply my-10 border-0;
+      text-align: center;
+    }
+    hr::before {
+      content: "\00b7 \00b7 \00b7";
+      color: var(--border);
+      font-size: 1.5rem;
+      letter-spacing: 0.5em;
+    }
+
+    /* ---------- Images ---------- */
     img {
-      @apply mx-auto border border-border;
+      @apply mx-auto rounded-md border border-border;
     }
 
     figcaption {
       @apply opacity-75;
     }
 
+    /* ---------- Tables ---------- */
     table {
       th,
       td {
@@ -66,18 +112,24 @@
       }
     }
 
+    /* ---------- Code ---------- */
     code {
-      @apply rounded bg-muted/75 p-1 wrap-break-word text-foreground before:content-none after:content-none;
+      @apply rounded bg-muted/75 px-1.5 py-0.5 text-[0.875em] text-foreground before:content-none after:content-none;
     }
 
     .astro-code code {
       @apply flex-[1_0_100%] bg-inherit p-0;
     }
 
-    blockquote {
-      @apply border-s-accent/80 wrap-break-word opacity-80;
+    /* ---------- Pre / Code Blocks ---------- */
+    pre {
+      @apply rounded-lg;
+    }
+    pre:focus-visible {
+      @apply border-transparent outline-2 outline-accent outline-dashed;
     }
 
+    /* ---------- Details / Summary ---------- */
     details {
       @apply inline-block cursor-pointer text-foreground select-none [&_p]:hidden [&_ul]:my-0!;
     }
@@ -85,15 +137,11 @@
     summary {
       @apply focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent focus-visible:outline-dashed;
     }
-
-    pre {
-      @apply focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-dashed;
-    }
   }
 
   /* ===== Code Blocks & Syntax Highlighting ===== */
   .astro-code {
-    @apply flex border bg-(--shiki-light-bg) text-(--shiki-light) outline-border [&_span]:text-(--shiki-light);
+    @apply flex rounded-lg border border-border bg-(--shiki-light-bg) text-(--shiki-light) [&_span]:text-(--shiki-light);
   }
 
   html[data-theme="dark"] .astro-code {
@@ -101,7 +149,6 @@
   }
 
   /* Styles for Shiki transformers */
-  /* https://shiki.style/packages/transformers */
   .astro-code {
     .line.diff.add {
       @apply relative inline-block w-full bg-green-400/20 before:absolute before:-left-3 before:text-green-500 before:content-['+'];

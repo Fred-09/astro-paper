@@ -118,9 +118,12 @@ const tagList = tags.slice(0, 3);
             <ul class="mt-2 flex flex-wrap gap-1.5">
               {tagList.map(tag => (
                 <li>
-                  <span class="inline-block rounded-full border border-border px-2 py-0.5 text-xs text-foreground/70">
+                  <a
+                    href={`/tags/${slugifyStr(tag)}/`}
+                    class="inline-block rounded-full border border-border px-2 py-0.5 text-xs text-foreground/70 transition-colors hover:border-accent hover:text-accent"
+                  >
                     {tag}
-                  </span>
+                  </a>
                 </li>
               ))}
             </ul>

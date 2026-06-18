@@ -5,19 +5,19 @@
 
 :root,
 html[data-theme="light"] {
-  --background: #fdfdfd;
-  --foreground: #282728;
-  --accent: #006cac;
-  --muted: #e6e6e6;
-  --border: #ece9e9;
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --accent: #4d6bfe;
+  --muted: #f4f5f7;
+  --border: #e5e7eb;
 }
 
 html[data-theme="dark"] {
-  --background: #212737;
-  --foreground: #eaedf3;
-  --accent: #ff6b01;
-  --muted: #343f60;
-  --border: #ab4b08;
+  --background: #1a1a1b;
+  --foreground: #e5e5e5;
+  --accent: #6b8aff;
+  --muted: #252527;
+  --border: #333338;
 }
 
 @theme inline {
@@ -31,23 +31,48 @@ html[data-theme="dark"] {
 
 @layer base {
   * {
-    @apply border-border outline-accent/75;
-    scrollbar-width: auto;
+    @apply border-border;
+    scrollbar-width: thin;
     scrollbar-color: var(--color-muted) transparent;
   }
   html {
     @apply overflow-y-scroll scroll-smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
   body {
     @apply flex min-h-svh flex-col bg-background font-app text-foreground selection:bg-accent/75 selection:text-background;
   }
   a,
   button {
-    @apply outline-offset-1 outline-accent focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-dashed;
+    @apply outline-none transition-colors duration-200;
+  }
+  a:focus-visible,
+  button:focus-visible {
+    @apply rounded-sm ring-2 ring-accent ring-offset-2 ring-offset-background;
   }
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+  button:not(:disabled):active {
+    @apply scale-[0.97];
+  }
+}
+
+@layer base {
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-muted);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-border);
   }
 }
 
