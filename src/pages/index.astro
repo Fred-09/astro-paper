@@ -22,84 +22,97 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 <Layout>
   <Header />
   <main id="main-content" data-layout="index" class="app-layout">
-    <section id="hero" class:list={["pt-8 pb-6", "border-b border-border"]}>
-      <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
+
+    <!-- ========== Hero ========== -->
+    <section id="hero" class="pt-12 pb-10 sm:pt-16 sm:pb-12 border-b border-border">
+      <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
         Welcome
       </h1>
-      <a
-        target="_blank"
-        href="/rss.xml"
-        class="inline-block"
-        aria-label="rss feed"
-        title="RSS Feed"
-      >
-        <IconRss
-          width={20}
-          height={20}
-          class="scale-125 stroke-accent stroke-3 rtl:-rotate-90"
-        />
-        <span class="sr-only">RSS Feed</span>
-      </a>
+      <div class="mt-4 max-w-prose space-y-4 text-base leading-relaxed opacity-85 sm:text-lg">
+        <p>
+          It's a pleasure to have you here.
+        </p>
+        <p>
+          This is my quiet online corner — a personal blog where I gather
+          words and reflections from my ongoing journey of learning and
+          thinking.
+        </p>
+        <p>
+          I started this blog for two simple reasons. Countless unique and
+          interesting thoughts keep popping up in my mind each day, and I
+          feel a strong urge to write them down and share them with others.
+          Beyond that, I have long dreamed of having a blog of my own. To
+          me, it is a special personal space on the internet: a place open
+          for everyone to visit and explore my ideas. As someone passionate
+          about technology and intellectual exploration, I also find
+          building and running this independent site incredibly cool and
+          rewarding.
+        </p>
+        <p>
+          Hope you enjoy your stay.
+        </p>
+      </div>
 
-      <p>
-  It's a pleasure to have you here.
-</p>
-<p class="whitespace-pre-line">
-  This is my quiet online corner — a personal blog where I gather words and reflections from my ongoing journey of learning and thinking.
-</p>
-<p class="whitespace-pre-line">
-  I started this blog for two simple reasons. Countless unique and interesting thoughts keep popping up in my mind each day, and I feel a strong urge to write them down and share them with others. Beyond that, I have long dreamed of having a blog of my own. To me, it is a special personal space on the internet: a place open for everyone to visit and explore my ideas. As someone passionate about technology and intellectual exploration, I also find building and running this independent site incredibly cool and rewarding.
-</p>
-<p class="whitespace-pre-line">
-  Hope you enjoy your stay.
-</p>
-      {
-        // only display if at least one social link is enabled
-        SOCIALS.length > 0 && (
-          <div class="mt-4 flex max-sm:flex-col sm:items-center">
-            <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">Social Links:</div>
-            <Socials />
-          </div>
-        )
-      }
+      <!-- Social + RSS -->
+      <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+        {
+          SOCIALS.length > 0 && <Socials />
+        }
+        <a
+          target="_blank"
+          href="/rss.xml"
+          class="inline-flex items-center gap-1.5 rounded-md px-2 py-1 -mx-2 text-sm opacity-60 hover:text-accent hover:opacity-100 transition-colors"
+          title="RSS Feed"
+        >
+          <IconRss class="size-4" />
+          <span>RSS</span>
+        </a>
+      </div>
     </section>
 
+    <!-- ========== Featured Posts ========== -->
     {
       featuredPosts.length > 0 && (
         <section
           id="featured"
           class:list={[
-            "pt-12 pb-6",
+            "pt-10 pb-6 sm:pt-12",
             { "border-b border-border": recentPosts.length > 0 },
           ]}
         >
-          <h2 class="text-2xl font-semibold tracking-wide">Featured</h2>
-          <ul>
+          <div class="mb-6 flex items-center gap-2">
+            <span class="text-lg opacity-50" aria-hidden="true">★</span>
+            <h2 class="text-xl font-semibold tracking-wide">Featured</h2>
+          </div>
+          <div class="grid gap-5 sm:grid-cols-2">
             {featuredPosts.map(data => (
-              <Card variant="h3" {...data} />
+              <Card variant="featured" {...data} />
             ))}
-          </ul>
+          </div>
         </section>
       )
     }
 
+    <!-- ========== Recent Posts ========== -->
     {
       recentPosts.length > 0 && (
-        <section id="recent-posts" class="pt-12 pb-6">
-          <h2 class="text-2xl font-semibold tracking-wide">Recent Posts</h2>
-          <ul>
+        <section id="recent-posts" class="pt-10 pb-6 sm:pt-12">
+          <h2 class="mb-6 text-xl font-semibold tracking-wide">Recent Posts</h2>
+          <ul class="divide-y divide-border">
             {recentPosts.map(
               (data, index) =>
-                index < SITE.postPerIndex && <Card variant="h3" {...data} />
+                index < SITE.postPerIndex && (
+                  <Card variant="compact" {...data} />
+                )
             )}
           </ul>
         </section>
       )
     }
 
-    <div class="my-8 text-center">
+    <div class="my-10 text-center">
       <LinkButton href="/posts/">
-        All Posts
+        Browse All Posts
         <IconArrowRight class="inline-block rtl:-rotate-180" />
       </LinkButton>
     </div>

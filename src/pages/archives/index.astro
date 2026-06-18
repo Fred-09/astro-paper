@@ -4,11 +4,10 @@ import Main from "@/layouts/Main.astro";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import Card from "@/components/Card.astro";
 import getPostsByGroupCondition from "@/utils/getPostsByGroupCondition";
+import { getPath } from "@/utils/getPath";
 import { SITE } from "@/config";
 
-// Redirect to 404 page if `showArchives` config is false
 if (!SITE.showArchives) {
   return Astro.redirect("/404");
 }
@@ -16,68 +15,80 @@ if (!SITE.showArchives) {
 const posts = await getCollection("blog", ({ data }) => !data.draft);
 
 const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
 ];
 ---
 
 <Layout title={`Archives | ${SITE.title}`}>
   <Header />
-  <Main pageTitle="Archives" pageDesc="All the articles I've archived.">
-    {
-      Object.entries(
-        getPostsByGroupCondition(posts, post =>
-          post.data.pubDatetime.getFullYear()
+  <Main pageTitle="Archives" pageDesc="All articles organized by date.">
+    <div class="space-y-10">
+      {
+        Object.entries(
+          getPostsByGroupCondition(posts, post =>
+            post.data.pubDatetime.getFullYear()
+          )
         )
-      )
-        .sort(([yearA], [yearB]) => Number(yearB) - Number(yearA))
-        .map(([year, yearGroup]) => (
-          <div>
-            <span class="text-2xl font-bold">{year}</span>
-            <sup class="text-sm">{yearGroup.length}</sup>
-            {Object.entries(
-              getPostsByGroupCondition(
-                yearGroup,
-                post => post.data.pubDatetime.getMonth() + 1
-              )
-            )
-              .sort(([monthA], [monthB]) => Number(monthB) - Number(monthA))
-              .map(([month, monthGroup]) => (
-                <div class="flex flex-col sm:flex-row">
-                  <div class="mt-6 min-w-36 text-lg sm:my-6">
-                    <span class="font-bold">{months[Number(month) - 1]}</span>
-                    <sup class="text-xs">{monthGroup.length}</sup>
-                  </div>
-                  <ul>
-                    {monthGroup
-                      .sort(
-                        (a, b) =>
-                          Math.floor(
-                            new Date(b.data.pubDatetime).getTime() / 1000
-                          ) -
-                          Math.floor(
-                            new Date(a.data.pubDatetime).getTime() / 1000
+          .sort(([a], [b]) => Number(b) - Number(a))
+          .map(([year, yearGroup]) => (
+            <section>
+              <div class="mb-4 flex items-baseline gap-2">
+                <h2 class="text-2xl font-bold">{year}</h2>
+                <span class="text-sm opacity-50">{yearGroup.length} post{yearGroup.length > 1 ? "s" : ""}</span>
+              </div>
+              <div class="space-y-6">
+                {Object.entries(
+                  getPostsByGroupCondition(
+                    yearGroup,
+                    post => post.data.pubDatetime.getMonth() + 1
+                  )
+                )
+                  .sort(([a], [b]) => Number(b) - Number(a))
+                  .map(([month, monthGroup]) => (
+                    <div class="flex flex-col gap-2 sm:flex-row">
+                      <div class="min-w-28 shrink-0 pt-0.5 text-base font-semibold opacity-70 sm:text-right">
+                        {months[Number(month) - 1]}
+                      </div>
+                      <ul class="flex-1 space-y-2">
+                        {monthGroup
+                          .sort(
+                            (a, b) =>
+                              Math.floor(
+                                new Date(b.data.pubDatetime).getTime() / 1000
+                              ) -
+                              Math.floor(
+                                new Date(a.data.pubDatetime).getTime() / 1000
+                              )
                           )
-                      )
-                      .map(data => (
-                        <Card {...data} />
-                      ))}
-                  </ul>
-                </div>
-              ))}
-          </div>
-        ))
-    }
+                          .map(post => (
+                            <li>
+                              <a
+                                href={getPath(post.id, post.filePath)}
+                                class:list={[
+                                  "block rounded-md border border-border bg-muted/15 px-4 py-2.5",
+                                  "transition-all duration-150",
+                                  "hover:border-accent hover:bg-muted/30 hover:-translate-y-0.5",
+                                  "focus-visible:outline-2 focus-visible:outline-accent",
+                                ]}
+                              >
+                                <span class="text-sm font-medium text-accent decoration-dashed underline-offset-4 hover:underline">
+                                  {post.data.title}
+                                </span>
+                                <span class="ml-2 text-xs opacity-50">
+                                  {post.data.pubDatetime.getDate()}
+                                </span>
+                              </a>
+                            </li>
+                          ))}
+                      </ul>
+                    </div>
+                  ))}
+              </div>
+            </section>
+          ))
+      }
+    </div>
   </Main>
   <Footer />
 </Layout>

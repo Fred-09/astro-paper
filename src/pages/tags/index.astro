@@ -2,7 +2,6 @@
 import { getCollection } from "astro:content";
 import Main from "@/layouts/Main.astro";
 import Layout from "@/layouts/Layout.astro";
-import Tag from "@/components/Tag.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import getUniqueTags from "@/utils/getUniqueTags";
@@ -10,15 +9,43 @@ import { SITE } from "@/config";
 
 const posts = await getCollection("blog");
 
-let tags = getUniqueTags(posts);
+const tags = getUniqueTags(posts);
+
+// Count posts per tag
+const tagCounts: Record<string, number> = {};
+for (const post of posts) {
+  for (const t of post.data.tags) {
+    const key = t.toLowerCase();
+    tagCounts[key] = (tagCounts[key] || 0) + 1;
+  }
+}
 ---
 
 <Layout title={`Tags | ${SITE.title}`}>
   <Header />
-  <Main pageTitle="Tags" pageDesc="All the tags used in posts.">
-    <ul class="flex flex-wrap gap-6">
-      {tags.map(({ tag, tagName }) => <Tag {tag} {tagName} />)}
-    </ul>
+  <Main pageTitle="Tags" pageDesc="Browse articles by topic.">
+    <div class="flex flex-wrap gap-3">
+      {tags.map(({ tag, tagName }) => (
+        <a
+          href={`/tags/${tag}/`}
+          transition:name={tag}
+          class:list={[
+            "group inline-flex items-center gap-2",
+            "rounded-lg border border-border bg-muted/20 px-4 py-2.5",
+            "transition-all duration-200",
+            "hover:border-accent hover:bg-muted/40 hover:-translate-y-0.5",
+            "focus-visible:outline-2 focus-visible:outline-accent",
+          ]}
+        >
+          <span class="text-sm font-medium group-hover:text-accent transition-colors">
+            #{tagName}
+          </span>
+          <span class="rounded-full bg-muted px-1.5 py-0.5 text-xs text-foreground/50">
+            {tagCounts[tag] ?? 1}
+          </span>
+        </a>
+      ))}
+    </div>
   </Main>
   <Footer />
 </Layout>

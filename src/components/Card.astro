@@ -5,29 +5,131 @@ import { getPath } from "@/utils/getPath";
 import Datetime from "./Datetime.astro";
 
 type Props = {
-  variant?: "h2" | "h3";
+  variant?: "default" | "featured" | "compact";
 } & CollectionEntry<"blog">;
 
-const { variant: Heading = "h2", id, data, filePath } = Astro.props;
+const { variant = "default", id, data, filePath } = Astro.props;
 
-const { title, description, ...props } = data;
+const { title, description, tags, ...props } = data;
+
+const tagList = tags.slice(0, 3);
 ---
 
-<li class="my-6">
-  <a
-    href={getPath(id, filePath)}
-    class:list={[
-      "inline-block text-lg font-medium text-accent",
-      "decoration-dashed underline-offset-4 hover:underline",
-      "focus-visible:no-underline focus-visible:underline-offset-0",
-    ]}
-  >
-    <Heading
-      style={{ viewTransitionName: slugifyStr(title.replaceAll(".", "-")) }}
+{
+  variant === "featured" && (
+    <article
+      class:list={[
+        "group rounded-lg border border-border bg-muted/30 p-5",
+        "transition-[box-shadow,transform] duration-200",
+        "hover:-translate-y-0.5 hover:shadow-md",
+      ]}
     >
-      {title}
-    </Heading>
-  </a>
-  <Datetime {...props} />
-  <p>{description}</p>
-</li>
+      <a
+        href={getPath(id, filePath)}
+        style={{ viewTransitionName: slugifyStr(title.replaceAll(".", "-")) }}
+        class:list={[
+          "text-lg font-semibold text-accent",
+          "decoration-dashed underline-offset-4 hover:underline",
+          "focus-visible:no-underline focus-visible:underline-offset-0",
+        ]}
+      >
+        <h3>{title}</h3>
+      </a>
+      <Datetime class="mt-1.5" {...props} />
+      {
+        tagList.length > 0 && (
+          <ul class="mt-2 flex flex-wrap gap-1.5">
+            {tagList.map(tag => (
+              <li>
+                <a
+                  href={`/tags/${slugifyStr(tag)}/`}
+                  class="inline-block rounded-full border border-border px-2 py-0.5 text-xs text-foreground/70 transition-colors hover:border-accent hover:text-accent"
+                >
+                  {tag}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      <p class="mt-3 text-sm leading-relaxed opacity-80 line-clamp-2">
+        {description}
+      </p>
+    </article>
+  )
+}
+
+{
+  variant === "compact" && (
+    <li class="py-4 first:pt-0 last:pb-0">
+      <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+        <a
+          href={getPath(id, filePath)}
+          class="text-base font-medium text-accent decoration-dashed underline-offset-4 hover:underline"
+          style={{ viewTransitionName: slugifyStr(title.replaceAll(".", "-")) }}
+        >
+          {title}
+        </a>
+        <Datetime class="shrink-0" {...props} />
+      </div>
+      {
+        tagList.length > 0 && (
+          <div class="mt-1 flex flex-wrap gap-1">
+            {tagList.map(tag => (
+              <a
+                href={`/tags/${slugifyStr(tag)}/`}
+                class="inline-block rounded-full bg-muted/50 px-2 py-px text-xs text-foreground/60 transition-colors hover:bg-muted hover:text-accent"
+              >
+                {tag}
+              </a>
+            ))}
+          </div>
+        )
+      }
+      <p class="mt-1 text-sm opacity-75 line-clamp-1">{description}</p>
+    </li>
+  )
+}
+
+{
+  variant === "default" && (
+    <li>
+      <article
+        class:list={[
+          "group rounded-lg border border-border bg-muted/20 p-4 sm:p-5",
+          "transition-[box-shadow,transform] duration-200",
+          "hover:-translate-y-0.5 hover:shadow-sm",
+        ]}
+      >
+        <a
+          href={getPath(id, filePath)}
+          style={{ viewTransitionName: slugifyStr(title.replaceAll(".", "-")) }}
+          class:list={[
+            "text-lg font-semibold text-accent",
+            "decoration-dashed underline-offset-4 hover:underline",
+            "focus-visible:no-underline focus-visible:underline-offset-0",
+          ]}
+        >
+          <h2>{title}</h2>
+        </a>
+        <Datetime class="mt-1.5" {...props} />
+        {
+          tagList.length > 0 && (
+            <ul class="mt-2 flex flex-wrap gap-1.5">
+              {tagList.map(tag => (
+                <li>
+                  <span class="inline-block rounded-full border border-border px-2 py-0.5 text-xs text-foreground/70">
+                    {tag}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+        <p class="mt-3 text-sm leading-relaxed opacity-75 line-clamp-2">
+          {description}
+        </p>
+      </article>
+    </li>
+  )
+}
