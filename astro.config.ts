@@ -22,7 +22,6 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],
     shikiConfig: {
-      // For more themes, visit https://shiki.style/themes
       themes: { light: "min-light", dark: "night-owl" },
       defaultColor: false,
       wrap: false,
@@ -35,10 +34,6 @@ export default defineConfig({
     },
   },
   vite: {
-    // eslint-disable-next-line
-    // @ts-ignore
-    // This will be fixed in Astro 6 with Vite 7 support
-    // See: https://github.com/withastro/astro/issues/14030
     plugins: [tailwindcss()],
     optimizeDeps: {
       exclude: ["@resvg/resvg-js"],
@@ -57,16 +52,28 @@ export default defineConfig({
       }),
     },
   },
+  // Prefetch for faster navigation — eliminates click-to-render delay
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: "hover",
+  },
   experimental: {
     preserveScriptOrder: true,
     fonts: [
       {
         name: "Inter",
         cssVariable: "--font-inter",
-        provider: fontProviders.google(),
+        provider: fontProviders.local(),
         fallbacks: ["monospace"],
-        weights: [300, 400, 500, 600, 700],
-        styles: ["normal", "italic"],
+        options: {
+          variants: [
+            { weight: 300, style: "normal", src: ["public/fonts/inter-300-normal.ttf"] },
+            { weight: 400, style: "normal", src: ["public/fonts/inter-400-normal.ttf"] },
+            { weight: 500, style: "normal", src: ["public/fonts/inter-500-normal.ttf"] },
+            { weight: 600, style: "normal", src: ["public/fonts/inter-600-normal.ttf"] },
+            { weight: 700, style: "normal", src: ["public/fonts/inter-700-normal.ttf"] },
+          ],
+        },
       },
     ],
   },

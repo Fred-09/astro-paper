@@ -1,0 +1,243 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { SITE } from "@/config";
+---
+
+<Layout title={`New Post | ${SITE.title}`}>
+  <Header />
+  <main id="main-content" class="app-layout pt-8 pb-12">
+    <h1 class="text-2xl font-semibold sm:text-3xl mb-2">New Blog Post</h1>
+    <p class="mb-6 text-sm italic opacity-75">
+      Fill in the form below, then download the <code>.md</code> file and place it
+      in <code>src/data/blog/</code>.
+    </p>
+
+    <form id="new-post-form" class="space-y-6 max-w-2xl">
+      <!-- ① Markdown editor -->
+      <div>
+        <label for="body" class="block mb-1.5 font-medium">
+          Content <span class="text-xs opacity-60">(Markdown)</span>
+        </label>
+        <textarea
+          id="body"
+          name="body"
+          rows="16"
+          class="w-full rounded border border-border bg-background px-3 py-2 font-mono text-sm focus:border-accent focus:outline-none"
+          placeholder="Write your post in Markdown..."
+        ></textarea>
+      </div>
+
+      <!-- ② Publication datetime -->
+      <div>
+        <label for="pub-datetime" class="block mb-1.5 font-medium">
+          Publication Date & Time
+        </label>
+        <input
+          type="datetime-local"
+          id="pub-datetime"
+          name="pub-datetime"
+          class="w-full rounded border border-border bg-background px-3 py-2 text-sm focus:border-accent focus:outline-none"
+        />
+      </div>
+
+      <!-- ③ Tags -->
+      <div>
+        <label for="tags" class="block mb-1.5 font-medium">
+          Tags
+          <span class="text-xs opacity-60">(comma-separated)</span>
+        </label>
+        <input
+          type="text"
+          id="tags"
+          name="tags"
+          placeholder="life, project, English"
+          class="w-full rounded border border-border bg-background px-3 py-2 text-sm focus:border-accent focus:outline-none"
+        />
+      </div>
+
+      <!-- ④ Featured toggle -->
+      <div class="flex items-center gap-3">
+        <label for="featured" class="font-medium">Featured</label>
+        <input
+          type="checkbox"
+          id="featured"
+          name="featured"
+          class="size-4 accent-accent"
+        />
+        <span class="text-xs opacity-60">Pin this post to the top</span>
+      </div>
+
+      <!-- ⑤ Description -->
+      <div>
+        <label for="description" class="block mb-1.5 font-medium">
+          Description
+        </label>
+        <input
+          type="text"
+          id="description"
+          name="description"
+          placeholder="A short summary of the post..."
+          class="w-full rounded border border-border bg-background px-3 py-2 text-sm focus:border-accent focus:outline-none"
+        />
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex flex-wrap gap-3 pt-2">
+        <button
+          type="button"
+          id="download-btn"
+          class="rounded bg-accent px-5 py-2 text-sm font-medium text-background hover:opacity-85 transition-opacity"
+        >
+          Download .md File
+        </button>
+        <button
+          type="button"
+          id="preview-btn"
+          class="rounded border border-border px-5 py-2 text-sm font-medium hover:border-accent hover:text-accent transition-colors"
+        >
+          Preview
+        </button>
+        <button
+          type="reset"
+          class="rounded border border-border px-5 py-2 text-sm opacity-60 hover:opacity-100 transition-opacity"
+        >
+          Clear
+        </button>
+      </div>
+    </form>
+
+    <!-- Live preview area -->
+    <div
+      id="preview-area"
+      class="mt-8 hidden border-t border-border pt-6"
+    >
+      <h2 class="text-lg font-semibold mb-3">Preview</h2>
+      <div
+        id="preview-content"
+        class="app-prose max-w-app rounded border border-border p-4 sm:p-6"
+      ></div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  function slugify(title: string): string {
+    return title
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_]+/g, "-")
+      .replace(/-+/g, "-")
+      .trim();
+  }
+
+  function buildFrontmatter(): string {
+    const titleEl = document.getElementById("body") as HTMLTextAreaElement;
+    const pubEl = document.getElementById("pub-datetime") as HTMLInputElement;
+    const tagsEl = document.getElementById("tags") as HTMLInputElement;
+    const featEl = document.getElementById("featured") as HTMLInputElement;
+    const descEl = document.getElementById("description") as HTMLInputElement;
+
+    // Derive title from first heading or first line
+    const bodyText = titleEl?.value.trim() ?? "";
+    const match = bodyText.match(/^#\s+(.+)/m);
+    const title = match ? match[1] : "Untitled Post";
+    const slug = slugify(title);
+
+    const pubDatetime = pubEl?.value
+      ? new Date(pubEl.value).toISOString()
+      : new Date().toISOString();
+
+    const tagsRaw = tagsEl?.value.trim() ?? "";
+    const tags = tagsRaw
+      ? tagsRaw
+          .split(",")
+          .map(t => `  - ${t.trim()}`)
+          .join("\n")
+      : "  - others";
+
+    const featured = featEl?.checked ? "true" : "false";
+    const description = descEl?.value.trim() ?? "";
+
+    return `---
+author: Fred Song
+pubDatetime: ${pubDatetime}
+modDatetime: ${pubDatetime}
+title: ${title}
+slug: ${slug}
+featured: ${featured}
+draft: false
+tags:
+${tags}
+description: ${description}
+---`;
+  }
+
+  function buildMarkdown(): string {
+    const bodyEl = document.getElementById("body") as HTMLTextAreaElement;
+    const bodyText = bodyEl?.value.trim() ?? "";
+    // Remove the first heading line from body (it becomes the title in frontmatter)
+    const bodyWithoutTitle = bodyText.replace(/^#\s+.+\n?/, "").trim();
+    return `${buildFrontmatter()}\n\n${bodyWithoutTitle}\n`;
+  }
+
+  // Download
+  document.getElementById("download-btn")?.addEventListener("click", () => {
+    const markdown = buildMarkdown();
+
+    // Derive filename from title line
+    const bodyText = (document.getElementById("body") as HTMLTextAreaElement)?.value.trim() ?? "";
+    const match = bodyText.match(/^#\s+(.+)/m);
+    const filename = slugify(match ? match[1] : "untitled") + ".md";
+
+    const blob = new Blob([markdown], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // Preview
+  document.getElementById("preview-btn")?.addEventListener("click", () => {
+    const previewArea = document.getElementById("preview-area");
+    const previewContent = document.getElementById("preview-content");
+    if (!previewArea || !previewContent) return;
+
+    const markdown = buildMarkdown();
+    // Simple markdown→HTML render (headings, bold, italic, links, lists, paragraphs)
+    let html = markdown
+      .replace(/^---[\s\S]*?---/, "") // strip frontmatter
+      .trim()
+      .replace(/^### (.+)$/gm, "<h3>$1</h3>")
+      .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+      .replace(/^# (.+)$/gm, "<h1>$1</h1>")
+      .replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>")
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.+?)\*/g, "<em>$1</em>")
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+      .replace(/^\- (.+)$/gm, "<li>$1</li>")
+      .replace(/(<li>.*<\/li>\n?)+/g, "<ul>$&</ul>")
+      .replace(/\n\n/g, "</p><p>")
+      .replace(/\n/g, "<br>");
+
+    html = "<p>" + html + "</p>";
+    html = html.replace(/<p><\/p>/g, "");
+    html = html.replace(/<p><h/g, "<h").replace(/\/h1><\/p>/g, "/h1>").replace(/\/h2><\/p>/g, "/h2>").replace(/\/h3><\/p>/g, "/h3>");
+    html = html.replace(/<p><ul>/g, "<ul>").replace(/<\/ul><\/p>/g, "</ul>");
+
+    previewContent.innerHTML = html;
+    previewArea.classList.remove("hidden");
+  });
+
+  // Set default datetime to now
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  const dtInput = document.getElementById("pub-datetime") as HTMLInputElement;
+  if (dtInput && !dtInput.value) {
+    dtInput.value = now.toISOString().slice(0, 16);
+  }
+</script>
