@@ -22,7 +22,7 @@ const months = [
 
 <Layout title={`Archives | ${SITE.title}`}>
   <Header />
-  <Main pageTitle="Archives" pageDesc="All articles organized by date.">
+  <Main pageTitle="Archives" pageDesc="">
     <div class="space-y-10">
       {
         Object.entries(
@@ -72,11 +72,11 @@ const months = [
                                   "focus-visible:outline-2 focus-visible:outline-accent",
                                 ]}
                               >
+                                <span class="mr-2 text-xs opacity-50 tabular-nums">
+                                  {months[Number(month) - 1].slice(0, 3)} {post.data.pubDatetime.getDate()}
+                                </span>
                                 <span class="text-sm font-medium text-accent decoration-dashed underline-offset-4 hover:underline">
                                   {post.data.title}
-                                </span>
-                                <span class="ml-2 text-xs opacity-50">
-                                  {post.data.pubDatetime.getDate()}
                                 </span>
                               </a>
                             </li>

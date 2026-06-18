@@ -7,7 +7,6 @@ import Socials from "@/components/Socials.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import Card from "@/components/Card.astro";
 import getSortedPosts from "@/utils/getSortedPosts";
-import IconRss from "@/assets/icons/IconRss.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import { SITE } from "@/config";
 import { SOCIALS } from "@/constants";
@@ -25,10 +24,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 
     <!-- ========== Hero ========== -->
     <section id="hero" class="pt-12 pb-10 sm:pt-16 sm:pb-12 border-b border-border">
-      <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
-        Welcome
-      </h1>
-      <div class="mt-4 max-w-prose space-y-4 text-base leading-relaxed opacity-85 sm:text-lg">
+      <div class="max-w-prose space-y-4 text-base leading-relaxed opacity-80 sm:text-lg">
         <p>
           It's a pleasure to have you here.
         </p>
@@ -53,20 +49,12 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
         </p>
       </div>
 
-      <!-- Social + RSS -->
+      <!-- Social -->
       <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <span class="text-sm opacity-50">Find me on</span>
         {
           SOCIALS.length > 0 && <Socials />
         }
-        <a
-          target="_blank"
-          href="/rss.xml"
-          class="inline-flex items-center gap-1.5 rounded-md px-2 py-1 -mx-2 text-sm opacity-60 hover:text-accent hover:opacity-100 transition-colors"
-          title="RSS Feed"
-        >
-          <IconRss class="size-4" />
-          <span>RSS</span>
-        </a>
       </div>
     </section>
 
@@ -84,7 +72,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
             <span class="text-lg opacity-50" aria-hidden="true">★</span>
             <h2 class="text-xl font-semibold tracking-wide">Featured</h2>
           </div>
-          <div class="grid gap-5 sm:grid-cols-2">
+          <div class="space-y-4">
             {featuredPosts.map(data => (
               <Card variant="featured" {...data} />
             ))}

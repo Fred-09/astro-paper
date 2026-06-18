@@ -2,12 +2,10 @@
 import IconX from "@/assets/icons/IconX.svg";
 import IconMoon from "@/assets/icons/IconMoon.svg";
 import IconSearch from "@/assets/icons/IconSearch.svg";
-import IconArchive from "@/assets/icons/IconArchive.svg";
 import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
 import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
 import ShadeTitle from "@/assets/head.svg";
 
-import LinkButton from "./LinkButton.astro";
 import { SITE } from "@/config";
 
 const { pathname } = Astro.url;
@@ -32,27 +30,27 @@ const isActive = (path: string) => {
 </a>
 
 <header
-  class="app-layout flex flex-col items-center justify-between sm:flex-row"
+  class="sticky top-0 z-40 bg-background/80 backdrop-blur-md"
 >
   <div
     id="top-nav-wrap"
     class:list={[
-      "py-2 sm:py-4",
+      "app-layout py-2 sm:py-3",
       "border-b border-border",
-      "relative w-full bg-background",
       "flex items-center justify-between",
     ]}
   >
-    <!-- Logo — fluid on mobile, fixed size on desktop -->
+    <!-- Logo -->
     <a
       href="/"
       class="z-10 flex-shrink-0 py-0 text-xl leading-8 font-semibold whitespace-nowrap sm:my-auto sm:text-2xl sm:leading-none"
     >
       <ShadeTitle class="h-[36px] w-auto sm:h-[50px] dark:invert" />
     </a>
+
     <nav
       id="nav-menu"
-      class="flex w-full flex-col items-center sm:ms-2 sm:flex-row sm:justify-end sm:space-x-4 sm:py-0"
+      class="flex w-full flex-col items-center sm:ms-6 sm:flex-row sm:justify-end sm:py-0"
     >
       <button
         id="menu-btn"
@@ -64,52 +62,34 @@ const isActive = (path: string) => {
         <IconX id="close-icon" class="hidden" />
         <IconMenuDeep id="menu-icon" />
       </button>
+
       <ul
         id="menu-items"
         class:list={[
           "mt-4 grid w-44 grid-cols-2 place-content-center gap-2",
           "[&>li>a]:block [&>li>a]:px-4 [&>li>a]:py-3 [&>li>a]:text-center [&>li>a]:font-medium [&>li>a]:hover:text-accent sm:[&>li>a]:px-2 sm:[&>li>a]:py-0.5",
           "hidden",
-          "sm:mt-0 sm:flex sm:w-auto sm:gap-x-5 sm:gap-y-0",
+          "sm:mt-0 sm:flex sm:w-auto sm:items-center sm:gap-x-6 sm:gap-y-0",
         ]}
       >
-        <li class="col-span-2">
-          <a href="/posts" class:list={{ "active-nav": isActive("/posts") }}>
-            Posts
-          </a>
+        <li class="col-span-2 sm:col-span-1">
+          <a href="/posts" class:list={{ "active-nav": isActive("/posts") }}>Posts</a>
         </li>
-        <li class="col-span-2">
-          <a href="/tags" class:list={{ "active-nav": isActive("/tags") }}>
-            Tags
-          </a>
+        <li class="col-span-2 sm:col-span-1">
+          <a href="/tags" class:list={{ "active-nav": isActive("/tags") }}>Tags</a>
         </li>
-        <li class="col-span-2">
-          <a href="/about" class:list={{ "active-nav": isActive("/about") }}>
-            About
-          </a>
+        <li class="col-span-2 sm:col-span-1">
+          <a href="/about" class:list={{ "active-nav": isActive("/about") }}>About</a>
         </li>
         {
           SITE.showArchives && (
-            <li class="col-span-2">
-              <LinkButton
-                href="/archives"
-                class:list={[
-                  "focus-outline flex justify-center p-3 sm:p-1",
-                  {
-                    "active-nav [&>svg]:stroke-accent": isActive("/archives"),
-                  },
-                ]}
-                title="Archives"
-                aria-label="archives"
-              >
-                <IconArchive class="hidden sm:inline-block" />
-                <span class="sm:sr-only">Archives</span>
-              </LinkButton>
+            <li class="col-span-2 sm:col-span-1">
+              <a href="/archives" class:list={{ "active-nav": isActive("/archives") }}>Archives</a>
             </li>
           )
         }
         <li class="col-span-1 flex items-center justify-center">
-          <LinkButton
+          <a
             href="/search"
             class:list={[
               "focus-outline flex p-3 sm:p-1",
@@ -120,7 +100,7 @@ const isActive = (path: string) => {
           >
             <IconSearch />
             <span class="sr-only">Search</span>
-          </LinkButton>
+          </a>
         </li>
         {
           SITE.lightAndDarkMode && (
