@@ -48,32 +48,78 @@ const isActive = (path: string) => {
       <ShadeTitle class="h-[36px] w-auto sm:h-[50px] dark:invert" />
     </a>
 
-    <nav
-      id="nav-menu"
-      class="flex w-full flex-col items-end sm:ms-6 sm:flex-row sm:items-center sm:justify-end sm:py-0"
+    <!-- Mobile hamburger -->
+    <button
+      id="menu-btn"
+      class="focus-outline z-30 flex-shrink-0 p-2 sm:hidden"
+      aria-label="Open Menu"
+      aria-expanded="false"
+      aria-controls="menu-items"
     >
-      <button
-        id="menu-btn"
-        class="focus-outline z-10 flex-shrink-0 p-2 sm:hidden"
-        aria-label="Open Menu"
-        aria-expanded="false"
-        aria-controls="menu-items"
-      >
-        <IconX id="close-icon" class="hidden" />
-        <IconMenuDeep id="menu-icon" />
-      </button>
+      <IconX id="close-icon" class="hidden" />
+      <IconMenuDeep id="menu-icon" />
+    </button>
 
-      <ul
-        id="menu-items"
-        class:list={[
-          "mt-3 w-full flex flex-col divide-y divide-border rounded-lg border border-border bg-muted/20",
-          "[&>li>a]:block [&>li>a]:px-5 [&>li>a]:py-3.5 [&>li>a]:text-base [&>li>a]:font-medium [&>li>a]:hover:text-accent [&>li>a]:text-center",
-          "hidden",
-          "sm:mt-0 sm:w-auto sm:flex sm:flex-row sm:items-center sm:divide-y-0 sm:rounded-none sm:border-0 sm:bg-transparent",
-          "sm:[&>li>a]:px-2 sm:[&>li>a]:py-0.5 sm:[&>li>a]:text-base",
-          "sm:gap-x-3",
-        ]}
+    <!-- Desktop nav -->
+    <nav class="hidden sm:flex sm:flex-row sm:items-center sm:gap-x-3">
+      <a href="/posts" class:list={["px-2 py-0.5 text-base", { "active-nav": isActive("/posts") }]}>Posts</a>
+      <a href="/tags" class:list={["px-2 py-0.5 text-base", { "active-nav": isActive("/tags") }]}>Tags</a>
+      <a href="/about" class:list={["px-2 py-0.5 text-base", { "active-nav": isActive("/about") }]}>About</a>
+      {
+        SITE.showArchives && (
+          <a href="/archives" class:list={["px-2 py-0.5 text-base", { "active-nav": isActive("/archives") }]}>Archives</a>
+        )
+      }
+      <a
+        href="/search"
+        class:list={["px-2 py-0.5", { "[&>svg]:stroke-accent": isActive("/search") }]}
+        title="Search" aria-label="search"
       >
+        <IconSearch />
+      </a>
+      {
+        SITE.lightAndDarkMode && (
+          <button
+            id="theme-btn"
+            class="focus-outline relative size-8 p-1 hover:[&>svg]:stroke-accent"
+            title="Toggles light & dark" aria-label="auto" aria-live="polite"
+          >
+            <IconMoon class="absolute top-[50%] left-[50%] -translate-[50%] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+            <IconSunHigh class="absolute top-[50%] left-[50%] -translate-[50%] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+          </button>
+        )
+      }
+    </nav>
+
+    <!-- Mobile menu overlay -->
+    <div
+      id="menu-items"
+      class="fixed inset-0 top-0 z-20 hidden bg-background/95 backdrop-blur-sm sm:hidden"
+    >
+      <ul class="flex flex-col items-center justify-center h-full gap-2 px-8">
+        <li><a href="/posts" class:list={["block px-6 py-3 text-xl font-medium", { "active-nav": isActive("/posts") }]}>Posts</a></li>
+        <li><a href="/tags" class:list={["block px-6 py-3 text-xl font-medium", { "active-nav": isActive("/tags") }]}>Tags</a></li>
+        <li><a href="/about" class:list={["block px-6 py-3 text-xl font-medium", { "active-nav": isActive("/about") }]}>About</a></li>
+        {
+          SITE.showArchives && (
+            <li><a href="/archives" class:list={["block px-6 py-3 text-xl font-medium", { "active-nav": isActive("/archives") }]}>Archives</a></li>
+          )
+        }
+        <li class="flex items-center gap-6 pt-4">
+          <a href="/search" class:list={["p-2", { "[&>svg]:stroke-accent": isActive("/search") }]} title="Search" aria-label="search">
+            <IconSearch />
+          </a>
+          {
+            SITE.lightAndDarkMode && (
+              <button id="theme-btn-mobile" class="focus-outline relative size-10 p-2 hover:[&>svg]:stroke-accent" title="Toggles light & dark" aria-label="auto">
+                <IconMoon class="absolute top-[50%] left-[50%] -translate-[50%] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+                <IconSunHigh class="absolute top-[50%] left-[50%] -translate-[50%] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+              </button>
+            )
+          }
+        </li>
+      </ul>
+    </div>
         <li>
           <a href="/posts" class:list={{ "active-nav": isActive("/posts") }}>Posts</a>
         </li>
@@ -144,7 +190,31 @@ const isActive = (path: string) => {
       menuItems.classList.toggle("hidden");
       menuIcon.classList.toggle("hidden");
       closeIcon.classList.toggle("hidden");
+
+      // Prevent body scroll when menu is open
+      document.body.classList.toggle("overflow-hidden", !openMenu);
     });
+
+    // Close menu when tapping a link
+    menuItems.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        menuItems.classList.add("hidden");
+        menuIcon?.classList.remove("hidden");
+        closeIcon?.classList.add("hidden");
+        menuBtn?.setAttribute("aria-expanded", "false");
+        menuBtn?.setAttribute("aria-label", "Open Menu");
+        document.body.classList.remove("overflow-hidden");
+      });
+    });
+
+    // Sync both theme buttons
+    const desktopThemeBtn = document.querySelector("#theme-btn");
+    const mobileThemeBtn = document.querySelector("#theme-btn-mobile");
+    if (desktopThemeBtn && mobileThemeBtn) {
+      mobileThemeBtn.addEventListener("click", () => {
+        (desktopThemeBtn as HTMLElement).click();
+      });
+    }
   }
 
   toggleNav();
