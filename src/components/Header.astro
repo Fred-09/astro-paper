@@ -46,7 +46,7 @@ const linkClass = (path: string) =>
       <a href="/tags" class={linkClass("/tags")}>Tags</a>
       <a href="/about" class={linkClass("/about")}>About</a>
       {SITE.showArchives && <a href="/archives" class={linkClass("/archives")}>Archives</a>}
-      <a href="/search" class:list={["px-2 py-0.5 hover:[&>svg]:stroke-accent", { "[&>svg]:stroke-accent": isActive("/search") }]} title="Search" aria-label="search">
+      <a href="/search" class:list={["px-2 py-0.5 hover:[&>svg]:stroke-accent", { "[&>svg]:stroke-accent": isActive("/search"), "active-nav": isActive("/search") }]} title="Search" aria-label="search">
         <IconSearch />
       </a>
       {SITE.lightAndDarkMode && (
@@ -71,12 +71,12 @@ const linkClass = (path: string) =>
         id="mobile-menu"
         class="absolute right-0 top-full mt-2 hidden w-48 rounded-lg border border-border bg-background py-2 shadow-lg"
       >
-        <a href="/posts" class="block px-4 py-3 text-center text-base font-medium hover:text-accent">Posts</a>
-        <a href="/tags" class="block px-4 py-3 text-center text-base font-medium hover:text-accent">Tags</a>
-        <a href="/about" class="block px-4 py-3 text-center text-base font-medium hover:text-accent">About</a>
-        {SITE.showArchives && <a href="/archives" class="block px-4 py-3 text-center text-base font-medium hover:text-accent">Archives</a>}
+        <a href="/posts" class={`block px-4 py-3 text-center text-base font-medium hover:text-accent${isActive("/posts") ? " active-nav" : ""}`}>Posts</a>
+        <a href="/tags" class={`block px-4 py-3 text-center text-base font-medium hover:text-accent${isActive("/tags") ? " active-nav" : ""}`}>Tags</a>
+        <a href="/about" class={`block px-4 py-3 text-center text-base font-medium hover:text-accent${isActive("/about") ? " active-nav" : ""}`}>About</a>
+        {SITE.showArchives && <a href="/archives" class={`block px-4 py-3 text-center text-base font-medium hover:text-accent${isActive("/archives") ? " active-nav" : ""}`}>Archives</a>}
         <div class="mt-1 flex items-center justify-center gap-4 border-t border-border pt-2">
-          <a href="/search" class:list={["p-2 hover:[&>svg]:stroke-accent", { "[&>svg]:stroke-accent": isActive("/search") }]} title="Search" aria-label="search">
+          <a href="/search" class:list={["p-2 hover:[&>svg]:stroke-accent", { "[&>svg]:stroke-accent": isActive("/search"), "active-nav": isActive("/search") }]} title="Search" aria-label="search">
             <IconSearch />
           </a>
           {SITE.lightAndDarkMode && (
